@@ -1,16 +1,44 @@
 const $start = document.querySelector("#start");
 const $game = document.querySelector("#game");
+const $time = document.querySelector("#time");
 
 let score = 0;
+let isGameStart = false;
+let colors = [
+  "green",
+  "black",
+  "gray",
+  "pink",
+  "yellow",
+  "blue",
+  "red",
+  "brown",
+  "cyan",
+];
 
 $start.addEventListener("click", startGame);
 $game.addEventListener("click", handleBoxClick);
 
 function startGame() {
+  isGameStart = true;
   $game.style.backgroundColor = "white";
   this.classList.add("hide");
 
+  let interval = setInterval(function () {
+    let time = parseFloat($time.textContent);
+
+    if (time <= 0) {
+      clearInterval(interval);
+      endGame();
+    } else {
+      $time.textContent = (time - 0.1).toFixed(2);
+    }
+  }, 100);
   renderBox();
+}
+
+function endGame() {
+  isGameStart = false;
 }
 
 function renderBox() {
@@ -22,15 +50,17 @@ function renderBox() {
   const maxLeft = gameSize.width - boxSize;
   box.style.width = box.style.height = boxSize + "px";
   box.style.position = "absolute";
-  box.style.backgroundColor = "#000";
+  box.style.backgroundColor = colors[getRandom(0, colors.length)];
   box.style.top = getRandom(0, maxTop) + "px";
   box.style.left = getRandom(0, maxLeft) + "px";
-  console.log(maxTop, maxLeft);
   box.setAttribute("data-box", "true");
   $game.insertAdjacentElement("afterbegin", box);
 }
 
 function handleBoxClick(e) {
+  if (!isGameStart) {
+    return;
+  }
   if (e.target.dataset.box) {
     renderBox();
     score++;

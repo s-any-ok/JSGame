@@ -14,13 +14,18 @@ function startGame() {
 }
 
 function renderBox() {
+  $game.innerHTML = "";
   let box = document.createElement("div");
-
-  box.style.width = box.style.height = "50px";
+  const boxSize = getRandom(30, 100);
+  const gameSize = $game.getBoundingClientRect();
+  const maxTop = gameSize.height - boxSize;
+  const maxLeft = gameSize.width - boxSize;
+  box.style.width = box.style.height = boxSize + "px";
   box.style.position = "absolute";
   box.style.backgroundColor = "#000";
-  box.style.top = "50px";
-  box.style.left = "100px";
+  box.style.top = getRandom(0, maxTop) + "px";
+  box.style.left = getRandom(0, maxLeft) + "px";
+  console.log(maxTop, maxLeft);
   box.setAttribute("data-box", "true");
   $game.insertAdjacentElement("afterbegin", box);
 }
@@ -29,7 +34,9 @@ function handleBoxClick(e) {
   if (e.target.dataset.box) {
     renderBox();
     score++;
-    console.log(score);
   }
-  console.log(e.target.dataset.box);
+}
+
+function getRandom(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
 }
